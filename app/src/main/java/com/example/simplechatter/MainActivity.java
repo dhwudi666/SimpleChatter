@@ -3,7 +3,6 @@ package com.example.simplechatter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,10 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.simplechatter.activity.ContactsActivity;
-import com.example.simplechatter.database.AppDataBase;
 import com.example.simplechatter.database.Entity.User;
 import com.example.simplechatter.database.Repository.UserRepository;
-import com.example.simplechatter.ui.MessageList;
 import com.example.simplechatter.activity.RegisterActivity;
 import com.example.simplechatter.util.ContactDataInitializer;
 
@@ -109,36 +106,4 @@ public class MainActivity extends AppCompatActivity {
                 .putBoolean("is_logged_in", true)
                 .apply();
     }
-
-//    private boolean validateInput(String email, String password) {
-//        // 验证邮箱是否为空
-//        if (email.isEmpty()) {
-//            etEmail.setError("请输入邮箱地址");
-//            etEmail.requestFocus();
-//            return false;
-//        }
-//        // 验证邮箱格式
-//        if (!isValidEmail(email)) {
-//            etEmail.setError("请输入有效的邮箱地址");
-//            etEmail.requestFocus();
-//            return false;
-//        }
-//        // 验证密码是否为空
-//        if (password.isEmpty()) {
-//            etPassword.setError("请输入密码");
-//            etPassword.requestFocus();
-//            return false;
-//        }
-//        // 验证密码长度
-//        if (password.length() < 6) {
-//            etPassword.setError("密码长度至少6位");
-//            etPassword.requestFocus();
-//            return false;
-//        }
-//        return true;
-//    }
-//    private boolean isValidEmail(String email) {
-//        // 简单的邮箱格式验证
-//        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-//    }
 }

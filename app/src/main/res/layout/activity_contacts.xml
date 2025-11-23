@@ -57,55 +57,51 @@
 
     <!-- 底部导航栏 -->
     <LinearLayout
-        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#FFFFFF"
         android:orientation="horizontal"
         android:elevation="8dp">
 
-        <!-- 消息按钮 -->
+        <!-- 首页 -->
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/home_24px"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:textColor="#999999"
+            android:textSize="12sp"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <!-- 信息 -->
         <Button
             android:id="@+id/btnMessage"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@android:drawable/ic_dialog_email"
+            android:drawableTop="@drawable/chat_24px"
             android:gravity="center"
             android:padding="8dp"
-            android:text="消息"
             android:background="@android:color/transparent"
-            android:textColor="#07C160"
+            android:textColor="#999999"
             android:textSize="12sp"
             style="?android:attr/borderlessButtonStyle" />
 
-        <!-- 联系人按钮 -->
-        <Button
-            android:id="@+id/btnContacts"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableTop="@android:drawable/ic_menu_myplaces"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="联系人"
-            android:background="@android:color/transparent"
-            android:textColor="#666666"
-            android:textSize="12sp"
-            style="?android:attr/borderlessButtonStyle" />
-
-        <!-- 我的按钮 -->
+        <!-- 我的（当前选中） -->
         <Button
             android:id="@+id/btnProfile"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@android:drawable/ic_menu_myplaces"
+            android:drawableTop="@drawable/person_24px"
             android:gravity="center"
             android:padding="8dp"
-            android:text="我的"
             android:background="@android:color/transparent"
-            android:textColor="#666666"
+            android:textColor="#2196F3"
             android:textSize="12sp"
             style="?android:attr/borderlessButtonStyle" />
 
