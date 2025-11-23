@@ -20,6 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.MessageList"></activity>
+        <activity android:name=".ui.PersonalView"></activity>
+        <activity android:name=".activity.RegisterActivity"></activity>
     </application>
-
 </manifest>

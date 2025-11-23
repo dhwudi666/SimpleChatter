@@ -2,13 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:padding="24dp"
-    >
+    android:padding="24dp">
 
     <!-- 欢迎登录标题 -->
     <TextView
@@ -22,7 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvSubtitle"
         android:layout_marginTop="30dp" />
 
     <!-- 副标题 -->
@@ -38,205 +35,223 @@
         app:layout_constraintTop_toBottomOf="@+id/tvWelcome"
         android:layout_marginTop="8dp" />
 
-    <!-- 邮箱输入框 -->
+    <!-- 邮箱输入框 - 修复图标显示问题 -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        app:startIconDrawable="@drawable/ic_email" <!-- 需要添加信封图标 -->
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
-    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        app:startIconDrawable="@drawable/stacked_email_24px"
+        app:boxBackgroundColor="#F8F9FA"
+        app:boxStrokeColor="#E0E0E0"
+        app:hintTextColor="#666666"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="请输入邮箱"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@android:color/transparent"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 密码输入框 - 修复图标显示问题 -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordInputLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="请输入邮箱"
-        android:inputType="textEmailAddress"
-        android:maxLines="1" />
+        android:layout_marginTop="16dp"
+        app:startIconDrawable="@drawable/lock_24px"
+        app:endIconMode="password_toggle"
+        app:boxBackgroundColor="#F8F9FA"
+        app:boxStrokeColor="#E0E0E0"
+        app:hintTextColor="#666666"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-</com.google.android.material.textfield.TextInputLayout>
-
-    <!-- 密码输入框 -->
-<com.google.android.material.textfield.TextInputLayout
-android:id="@+id/passwordInputLayout"
-android:layout_width="0dp"
-android:layout_height="wrap_content"
-android:layout_marginTop="16dp"
-app:startIconDrawable="@drawable/ic_lock" <!-- 需要添加锁图标 -->
-    app:endIconMode="password_toggle"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
-    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
-<com.google.android.material.textfield.TextInputEditText
-android:id="@+id/etPassword"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:hint="请输入密码"
-android:inputType="textPassword"
-android:maxLines="1" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="请输入密码"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@android:color/transparent"
+            android:textColor="#000000"
+            android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 忘记密码 -->
-<TextView
-android:id="@+id/tvForgotPassword"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="忘记密码?"
-android:textColor="#2196F3"
-android:textSize="14sp"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
-android:layout_marginTop="8dp" />
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="忘记密码?"
+        android:textColor="#2196F3"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordInputLayout"
+        android:layout_marginTop="8dp" />
 
     <!-- 登录按钮 -->
-<Button
-android:id="@+id/btnLogin"
-android:layout_width="0dp"
-android:layout_height="56dp"
-android:layout_marginTop="24dp"
-android:background="#2196F3"
-android:text="登录"
-android:textColor="#FFFFFF"
-android:textSize="16sp"
-android:textStyle="bold"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toBottomOf="@+id/tvForgotPassword" />
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
+        android:background="#2196F3"
+        android:text="登录"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvForgotPassword" />
 
     <!-- 分隔线：或者 -->
-<RelativeLayout
-android:layout_width="0dp"
-android:layout_height="wrap_content"
-android:layout_marginTop="32dp"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toBottomOf="@+id/btnLogin">
+    <RelativeLayout
+        android:id="@+id/orLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin">
 
-<View
-    android:id="@+id/dividerLeft"
-    android:layout_width="0dp"
-    android:layout_height="1dp"
-    android:layout_centerVertical="true"
-    android:layout_toLeftOf="@+id/tvOr"
-    android:layout_toStartOf="@+id/tvOr"
-    android:background="#E0E0E0"
-    android:layout_marginEnd="8dp" />
+        <View
+            android:id="@+id/dividerLeft"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvOr"
+            android:background="#E0E0E0"
+            android:layout_marginEnd="8dp" />
 
-<TextView
-    android:id="@+id/tvOr"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:text="或者"
-    android:textColor="#666666"
-    android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tvOr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="或者"
+            android:textColor="#666666"
+            android:textSize="12sp" />
 
-<View
-    android:id="@+id/dividerRight"
-    android:layout_width="0dp"
-    android:layout_height="1dp"
-    android:layout_centerVertical="true"
-    android:layout_toRightOf="@+id/tvOr"
-    android:layout_toEndOf="@+id/tvOr"
-    android:background="#E0E0E0"
-    android:layout_marginStart="8dp" />
+        <View
+            android:id="@+id/dividerRight"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tvOr"
+            android:background="#E0E0E0"
+            android:layout_marginStart="8dp" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
     <!-- 第三方登录按钮容器 -->
-<LinearLayout
-android:layout_width="0dp"
-android:layout_height="wrap_content"
-android:layout_marginTop="24dp"
-android:gravity="center"
-android:orientation="horizontal"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toBottomOf="@+id/orLayout">
-
-<!-- 微信登录 -->
-<androidx.cardview.widget.CardView
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:layout_marginEnd="20dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/socialLoginLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/orLayout">
 
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_wechat" <!-- 需要添加微信图标 -->
-        android:tint="#07C160" />
+        <!-- 微信登录 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="20dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="微信登录"
-            android:textColor="#666666"
-            android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/wechat"
+                    app:tint="#07C160" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="微信登录"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Apple登录 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/apple"
+                    app:tint="#000000" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Apple登录"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
-
-<!-- Apple登录 -->
-<androidx.cardview.widget.CardView
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_apple" <!-- 需要添加Apple图标 -->
-        android:tint="#000000" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Apple登录"
-            android:textColor="#666666"
-            android:textSize="12sp" />
-
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
-
-</LinearLayout>
 
     <!-- 注册引导 -->
-<TextView
-android:id="@+id/tvRegister"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_marginBottom="40dp"
-android:text="还没有账户?立即注册"
-android:textColor="#2196F3"
-android:textSize="14sp"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/tvRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="还没有账户?立即注册"
+        android:textColor="#2196F3"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

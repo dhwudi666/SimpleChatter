@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- 聊天标题栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
+
+        <!-- 返回按钮 -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/jiantou"
+            android:scaleType="centerInside"
+            android:padding="16dp"
+            android:tint="#000000" />
+
+        <!-- 聊天对象信息 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvChatTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="聊天对象"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tvOnlineStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="在线"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+        <!-- 更多操作菜单 -->
+        <ImageButton
+            android:id="@+id/btnMore"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/list"
+            android:scaleType="centerInside"
+            android:padding="16dp"
+            android:tint="#000000" />
+
+    </RelativeLayout>
+
+    <!-- 消息列表区域 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FAFAFA"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+    <!-- 输入区域容器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <!-- 表情面板 -->
+        <LinearLayout
+            android:id="@+id/panelEmoji"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#F8F8F8"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <!-- 表情分类标签 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:background="#E0E0E0">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="😊"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="🐶"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="🎉"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:background="?attr/selectableItemBackground" />
+
+            </LinearLayout>
+
+            <!-- 表情网格 -->
+            <GridView
+                android:id="@+id/gvEmojis"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:numColumns="8"
+                android:verticalSpacing="8dp"
+                android:horizontalSpacing="8dp"
+                android:padding="16dp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- 输入框区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="#FFFFFF">
+
+            <!-- 语音/键盘切换 -->
+            <ImageButton
+                android:id="@+id/btnVoice"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/keyboard_24px"
+                android:scaleType="centerInside"
+                android:tint="#666666" />
+
+            <!-- 文本输入框 -->
+            <EditText
+                android:id="@+id/etMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:minHeight="48dp"
+                android:maxHeight="120dp"
+                android:gravity="center_vertical"
+                android:hint="输入消息..."
+                android:background="@drawable/edittext_round_bg"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp"
+                android:maxLines="5"
+                android:inputType="textMultiLine" />
+
+            <!-- 表情按钮 -->
+            <ImageButton
+                android:id="@+id/btnEmoji"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/sentiment_satisfied_24px"
+                android:scaleType="centerInside"
+                android:tint="#666666" />
+
+<!--            &lt;!&ndash; 更多功能 &ndash;&gt;-->
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnMoreOptions"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/sentiment_satisfied_24px"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:tint="#666666" />-->
+
+            <!-- 发送按钮 -->
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/arrow_circle_up_24px"
+                android:scaleType="centerInside"
+                android:tint="#07C160"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
