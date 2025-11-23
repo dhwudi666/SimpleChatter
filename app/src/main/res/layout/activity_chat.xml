@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="#FAFAFA">
 
     <!-- 聊天标题栏 -->
     <RelativeLayout
@@ -18,6 +17,8 @@
             android:id="@+id/btnBack"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/jiantou"
             android:scaleType="centerInside"
@@ -36,7 +37,7 @@
                 android:id="@+id/tvChatTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="聊天对象"
+                android:text="王五"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#000000" />
@@ -57,6 +58,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/list"
             android:scaleType="centerInside"
@@ -151,7 +153,7 @@
             android:padding="8dp"
             android:background="#FFFFFF">
 
-            <!-- 语音/键盘切换 -->
+            <!-- 键盘/语音切换按钮 -->
             <ImageButton
                 android:id="@+id/btnVoice"
                 android:layout_width="48dp"
@@ -178,7 +180,10 @@
                 android:paddingEnd="16dp"
                 android:textSize="16sp"
                 android:maxLines="5"
-                android:inputType="textMultiLine" />
+                android:inputType="textCapSentences|textMultiLine"
+                android:imeOptions="actionSend"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
 
             <!-- 表情按钮 -->
             <ImageButton
@@ -190,26 +195,18 @@
                 android:scaleType="centerInside"
                 android:tint="#666666" />
 
-<!--            &lt;!&ndash; 更多功能 &ndash;&gt;-->
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnMoreOptions"-->
-<!--                android:layout_width="48dp"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:src="@drawable/sentiment_satisfied_24px"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:tint="#666666" />-->
-
             <!-- 发送按钮 -->
             <Button
                 android:id="@+id/btnSend"
-                android:layout_width="48dp"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackground"
-                android:src="@drawable/arrow_circle_up_24px"
-                android:scaleType="centerInside"
-                android:tint="#07C160"
+                android:background="@drawable/send_24px"
+                android:text="发送"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:visibility="gone" />
 
         </LinearLayout>

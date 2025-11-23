@@ -104,7 +104,6 @@ public class ContactDataInitializer {
             System.out.println("已清空联系人数据");
         });
     }
-
     public void shutdown() {
         if (executor != null) {
             executor.shutdown();

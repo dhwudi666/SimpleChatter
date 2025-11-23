@@ -9,9 +9,10 @@ import java.util.List;
 public interface ConversationDao {
     @Insert
     long insertConversation(Conversation conversation);
-
     @Update
     int updateConversation(Conversation conversation);
+    @Delete
+    int deleteConversation(Conversation conversation);
 
     @Query("SELECT * FROM conversations WHERE userId = :userId ORDER BY lastMessageTime DESC")
     List<Conversation> getConversationsByUserId(int userId);
@@ -21,7 +22,9 @@ public interface ConversationDao {
 
     @Query("UPDATE conversations SET unreadCount = unreadCount + 1 WHERE id = :conversationId")
     void incrementUnreadCount(int conversationId);
-
     @Query("UPDATE conversations SET unreadCount = 0 WHERE id = :conversationId")
     void clearUnreadCount(int conversationId);
+
+    @Query("UPDATE conversations SET lastMessage = :message, lastMessageTime = :time WHERE id = :conversationId")
+    void updateLastMessage(int conversationId, String message, long time);
 }

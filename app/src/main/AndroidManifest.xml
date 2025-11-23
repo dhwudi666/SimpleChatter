@@ -23,5 +23,7 @@
         <activity android:name=".ui.MessageList"></activity>
         <activity android:name=".ui.PersonalView"></activity>
         <activity android:name=".activity.RegisterActivity"></activity>
+        <activity android:name=".activity.ContactsActivity"></activity>
+        <activity android:name=".activity.ChatActivity"></activity>
     </application>
 </manifest>

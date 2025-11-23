@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.simplechatter.activity.ContactsActivity;
 import com.example.simplechatter.database.AppDataBase;
 import com.example.simplechatter.database.Entity.User;
 import com.example.simplechatter.database.Repository.UserRepository;
@@ -19,19 +20,26 @@ import com.example.simplechatter.util.ContactDataInitializer;
 
 public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
-    private AppDataBase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 初始化视图
+        initViews();
         // 初始化数据库连接
         initializeDatabase();
         //注册事件
         registerButton();
         //登录事件
         setupLoginButton();
+        // 检查是否已登录（自动登录）
+        checkAutoLogin();
         //忘记密码
 //        setupForgotPassword();
+    }
+    private void initViews() {
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
     }
     private void initializeDatabase(){
         // 初始化联系人数据
@@ -47,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void checkAutoLogin() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+
+        if (isLoggedIn) {
+            // 自动跳转到联系人列表
+            navigateToContactsActivity();
+        }
+    }
+
+    private void navigateToContactsActivity() {
+        Intent intent = new Intent(MainActivity.this, ContactsActivity.class);
+        startActivity(intent);
+        finish(); // 关闭登录页面
     }
     private void setupLoginButton() {
         findViewById(R.id.btnLogin).setOnClickListener(v -> {
@@ -66,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                             // 保存用户登录状态
                             saveUserLogin(user);
                             // 跳转到主页面
-                            startActivity(new Intent(MainActivity.this, MessageList.class));
+                            startActivity(new Intent(MainActivity.this, ContactsActivity.class));
                             finish();
                         } else {
                             Toast.makeText(MainActivity.this, "邮箱或密码错误", Toast.LENGTH_SHORT).show();
@@ -86,35 +110,35 @@ public class MainActivity extends AppCompatActivity {
                 .apply();
     }
 
-    private boolean validateInput(String email, String password) {
-        // 验证邮箱是否为空
-        if (email.isEmpty()) {
-            etEmail.setError("请输入邮箱地址");
-            etEmail.requestFocus();
-            return false;
-        }
-        // 验证邮箱格式
-        if (!isValidEmail(email)) {
-            etEmail.setError("请输入有效的邮箱地址");
-            etEmail.requestFocus();
-            return false;
-        }
-        // 验证密码是否为空
-        if (password.isEmpty()) {
-            etPassword.setError("请输入密码");
-            etPassword.requestFocus();
-            return false;
-        }
-        // 验证密码长度
-        if (password.length() < 6) {
-            etPassword.setError("密码长度至少6位");
-            etPassword.requestFocus();
-            return false;
-        }
-        return true;
-    }
-    private boolean isValidEmail(String email) {
-        // 简单的邮箱格式验证
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
+//    private boolean validateInput(String email, String password) {
+//        // 验证邮箱是否为空
+//        if (email.isEmpty()) {
+//            etEmail.setError("请输入邮箱地址");
+//            etEmail.requestFocus();
+//            return false;
+//        }
+//        // 验证邮箱格式
+//        if (!isValidEmail(email)) {
+//            etEmail.setError("请输入有效的邮箱地址");
+//            etEmail.requestFocus();
+//            return false;
+//        }
+//        // 验证密码是否为空
+//        if (password.isEmpty()) {
+//            etPassword.setError("请输入密码");
+//            etPassword.requestFocus();
+//            return false;
+//        }
+//        // 验证密码长度
+//        if (password.length() < 6) {
+//            etPassword.setError("密码长度至少6位");
+//            etPassword.requestFocus();
+//            return false;
+//        }
+//        return true;
+//    }
+//    private boolean isValidEmail(String email) {
+//        // 简单的邮箱格式验证
+//        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+//    }
 }

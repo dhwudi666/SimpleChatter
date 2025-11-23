@@ -1,0 +1,126 @@
+package com.example.simplechatter.Adapter;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.simplechatter.R;
+import com.example.simplechatter.database.Entity.Message;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
+public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private List<Message> messageList;
+    private int currentUserId;
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    private static final int TYPE_SENT = 0;
+    private static final int TYPE_RECEIVED = 1;
+
+    public MessageAdapter(List<Message> messageList, int currentUserId) {
+        this.messageList = messageList;
+        this.currentUserId = currentUserId;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Message message = messageList.get(position);
+        return message.isSentByMe() ? TYPE_SENT : TYPE_RECEIVED;
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_SENT) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_message_sent, parent, false);
+            return new SentMessageViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_message_received, parent, false);
+            return new ReceivedMessageViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Message message = messageList.get(position);
+        String time = timeFormat.format(message.getTimestamp());
+
+        if (holder.getItemViewType() == TYPE_SENT) {
+            ((SentMessageViewHolder) holder).bind(message, time);
+        } else {
+            ((ReceivedMessageViewHolder) holder).bind(message, time);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return messageList.size();
+    }
+
+    public void updateData(List<Message> newMessages) {
+        this.messageList = newMessages;
+        notifyDataSetChanged();
+    }
+
+    // 发送的消息ViewHolder
+    static class SentMessageViewHolder extends RecyclerView.ViewHolder {
+        private TextView tvMessage, tvTime, tvStatus;
+
+        SentMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvMessage = itemView.findViewById(R.id.tvMessage);
+            tvTime = itemView.findViewById(R.id.tvTime);
+            // 修复：检查tvStatus是否存在
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+        }
+
+        void bind(Message message, String time) {
+            tvMessage.setText(message.getContent());
+            tvTime.setText(time);
+
+            // 修复：检查tvStatus是否存在
+            if (tvStatus != null) {
+                switch (message.getStatus()) {
+                    case Message.STATUS_SENDING:
+                        tvStatus.setText("🕐");
+                        break;
+                    case Message.STATUS_SENT:
+                        tvStatus.setText("✓");
+                        break;
+                    case Message.STATUS_DELIVERED:
+                        tvStatus.setText("✓✓");
+                        break;
+                    case Message.STATUS_READ:
+                        tvStatus.setText("✓✓");
+                        tvStatus.setTextColor(0xFF07C160);
+                        break;
+                    default:
+                        tvStatus.setText("❌");
+                }
+            }
+        }
+    }
+
+    // 接收的消息ViewHolder
+    static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
+        private TextView tvMessage, tvTime;
+
+        ReceivedMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvMessage = itemView.findViewById(R.id.tvMessage);
+            tvTime = itemView.findViewById(R.id.tvTime);
+        }
+
+        void bind(Message message, String time) {
+            tvMessage.setText(message.getContent());
+            tvTime.setText(time);
+        }
+    }
+}

@@ -8,35 +8,17 @@
     android:paddingTop="4dp"
     android:paddingBottom="4dp">
 
-    <!-- 时间戳 -->
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="12:30"
-        android:textSize="11sp"
-        android:textColor="#999999"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:layout_marginBottom="4dp" />
-
-    <!-- 消息内容区域 -->
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
 
-        <!-- 消息气泡 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentEnd="true">
 
-            <!-- 消息内容 -->
             <TextView
                 android:id="@+id/tvMessage"
                 android:layout_width="wrap_content"
@@ -51,18 +33,29 @@
                 android:textSize="16sp"
                 android:maxWidth="240dp" />
 
-            <!-- 发送状态指示器 -->
-            <ImageView
-                android:id="@+id/ivStatus"
+            <TextView
+                android:id="@+id/tvStatus"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="4dp"
-                android:tint="#999999" />
+                android:text="✓"
+                android:textColor="#999999"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="12:30"
+        android:textSize="11sp"
+        android:textColor="#999999"
+        android:layout_marginTop="2dp" />
 
 </LinearLayout>
