@@ -90,7 +90,8 @@
         <!-- 未读消息数 -->
         <TextView
             android:id="@+id/tvUnreadCount"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
+            android:minWidth="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/unread_badge"
@@ -98,6 +99,7 @@
             android:text="2"
             android:textColor="#FFFFFF"
             android:textSize="10sp"
+            android:textStyle="bold"
             android:visibility="gone" />
 
     </LinearLayout>

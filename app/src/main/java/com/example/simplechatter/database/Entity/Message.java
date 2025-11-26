@@ -1,5 +1,6 @@
 package com.example.simplechatter.database.Entity;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
@@ -20,23 +21,17 @@ import androidx.room.PrimaryKey;
 public class Message {
     @PrimaryKey(autoGenerate = true)
     public int id;
-
     public int conversationId; // 会话ID
     public int senderId; // 发送者ID
     public int receiverId; // 接收者ID
+
     public String content; // 消息内容
-    public int messageType; // 消息类型: 0=文本, 1=图片, 2=表情, 3=文件
+    public int messageType; // 消息类型
     public long timestamp; // 发送时间戳
     public int status; // 消息状态: 0=发送中, 1=已发送, 2=已送达, 3=已读
-    public boolean isSentByMe; // 是否由我发送
-    public String extraData; // 扩展数据（如图片URL、文件路径等）
 
     // 消息类型常量
     public static final int TYPE_TEXT = 0;
-    public static final int TYPE_IMAGE = 1;
-    public static final int TYPE_EMOJI = 2;
-    public static final int TYPE_FILE = 3;
-
     // 消息状态常量
     public static final int STATUS_SENDING = 0;
     public static final int STATUS_SENT = 1;
@@ -51,11 +46,8 @@ public class Message {
         this.messageType = messageType;
         this.timestamp = System.currentTimeMillis();
         this.status = STATUS_SENT;
-        this.isSentByMe = true;
-        this.extraData = "";
     }
 
-    // Getter and Setter methods...
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -69,6 +61,7 @@ public class Message {
     public void setReceiverId(int receiverId) { this.receiverId = receiverId; }
 
     public String getContent() { return content; }
+
     public void setContent(String content) { this.content = content; }
 
     public int getMessageType() { return messageType; }
@@ -79,10 +72,4 @@ public class Message {
 
     public int getStatus() { return status; }
     public void setStatus(int status) { this.status = status; }
-
-    public boolean isSentByMe() { return isSentByMe; }
-    public void setSentByMe(boolean sentByMe) { isSentByMe = sentByMe; }
-
-    public String getExtraData() { return extraData; }
-    public void setExtraData(String extraData) { this.extraData = extraData; }
 }

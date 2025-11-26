@@ -8,7 +8,6 @@ import com.example.simplechatter.database.AppDataBase;
 import com.example.simplechatter.database.DAO.UserDao;
 import com.example.simplechatter.database.Entity.User;
 
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -87,11 +86,11 @@ public class UserRepository {
         });
     }
 
-    // 更新密码
-    public void updatePassword(String email, String newPassword, OnPasswordUpdateListener listener) {
+    // 更新密码 - 修复参数问题
+    public void updatePassword(int userId, String newPassword, OnPasswordUpdateListener listener) {
         executor.execute(() -> {
             try {
-                int result = userDao.updatePassword(email, newPassword);
+                int result = userDao.updatePassword(userId, newPassword);
                 boolean success = result > 0;
                 mainHandler.post(() -> {
                     if (listener != null) {
@@ -108,14 +107,58 @@ public class UserRepository {
         });
     }
 
-    // 关闭ExecutorService（在Activity销毁时调用）
-    public void shutdown() {
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-        }
+    // 根据邮箱更新密码
+    public void updatePasswordByEmail(String email, String newPassword, OnPasswordUpdateListener listener) {
+        executor.execute(() -> {
+            try {
+                // 先获取用户ID
+                User user = userDao.getUserByEmail(email);
+                if (user != null) {
+                    int result = userDao.updatePassword(user.getId(), newPassword);
+                    boolean success = result > 0;
+                    mainHandler.post(() -> {
+                        if (listener != null) {
+                            listener.onPasswordUpdateResult(success);
+                        }
+                    });
+                } else {
+                    mainHandler.post(() -> {
+                        if (listener != null) {
+                            listener.onPasswordUpdateResult(false);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    if (listener != null) {
+                        listener.onPasswordUpdateResult(false);
+                    }
+                });
+            }
+        });
     }
 
-    // 回调接口保持不变
+    // 获取用户信息
+    public void getUserById(int userId, OnGetUserListener listener) {
+        executor.execute(() -> {
+            try {
+                User user = userDao.getUserById(userId);
+                mainHandler.post(() -> {
+                    if (listener != null) {
+                        listener.onGetUserResult(user != null, user);
+                    }
+                });
+            } catch (Exception e) {
+                mainHandler.post(() -> {
+                    if (listener != null) {
+                        listener.onGetUserResult(false, null);
+                    }
+                });
+            }
+        });
+    }
+
+    // 回调接口
     public interface OnRegisterListener {
         void onRegisterResult(boolean success, long userId);
     }
@@ -130,5 +173,9 @@ public class UserRepository {
 
     public interface OnPasswordUpdateListener {
         void onPasswordUpdateResult(boolean success);
+    }
+
+    public interface OnGetUserListener {
+        void onGetUserResult(boolean success, User user);
     }
 }

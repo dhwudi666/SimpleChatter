@@ -1,5 +1,6 @@
 package com.example.simplechatter.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,14 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
-        return message.isSentByMe() ? TYPE_SENT : TYPE_RECEIVED;
+
+        // ✅ 修复：动态计算消息方向，而不是调用不存在的方法
+        boolean isSentByMe = message.getSenderId() == currentUserId;
+
+        Log.d("MessageAdapter", "消息方向判断 - 发送者: " + message.getSenderId() +
+                ", 当前用户: " + currentUserId + ", 是否我发送: " + isSentByMe);
+
+        return isSentByMe ? TYPE_SENT : TYPE_RECEIVED;
     }
 
     @NonNull
@@ -52,6 +60,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Message message = messageList.get(position);
         String time = timeFormat.format(message.getTimestamp());
 
+        // 添加调试日志
+        boolean isSentByMe = message.getSenderId() == currentUserId;
+        Log.d("MessageAdapter", "绑定消息 - 位置: " + position +
+                ", 内容: " + message.getContent() +
+                ", 发送者: " + message.getSenderId() +
+                ", 类型: " + (isSentByMe ? "发送" : "接收"));
+
         if (holder.getItemViewType() == TYPE_SENT) {
             ((SentMessageViewHolder) holder).bind(message, time);
         } else {
@@ -65,8 +80,17 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void updateData(List<Message> newMessages) {
-        this.messageList = newMessages;
+        this.messageList.clear();
+        this.messageList.addAll(newMessages);
         notifyDataSetChanged();
+
+        // 添加调试日志
+        Log.d("MessageAdapter", "数据更新，消息数量: " + newMessages.size());
+        for (int i = 0; i < newMessages.size(); i++) {
+            Message msg = newMessages.get(i);
+            Log.d("MessageAdapter", "消息" + i + ": 发送者=" + msg.getSenderId() +
+                    ", 接收者=" + msg.getReceiverId() + ", 内容=" + msg.getContent());
+        }
     }
 
     // 发送的消息ViewHolder
@@ -77,7 +101,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             tvMessage = itemView.findViewById(R.id.tvMessage);
             tvTime = itemView.findViewById(R.id.tvTime);
-            // 修复：检查tvStatus是否存在
             tvStatus = itemView.findViewById(R.id.tvStatus);
         }
 
@@ -85,7 +108,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvMessage.setText(message.getContent());
             tvTime.setText(time);
 
-            // 修复：检查tvStatus是否存在
             if (tvStatus != null) {
                 switch (message.getStatus()) {
                     case Message.STATUS_SENDING:

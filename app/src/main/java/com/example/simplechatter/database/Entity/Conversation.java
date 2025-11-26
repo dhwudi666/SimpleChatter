@@ -27,8 +27,6 @@ public class Conversation {
     public long lastMessageTime;
     public int unreadCount;
     public int totalMessages;
-    public boolean isPinned;
-    public boolean isMuted;
     public long updateTime;
 
     public Conversation(int userId, int contactId) {
@@ -38,12 +36,9 @@ public class Conversation {
         this.lastMessageTime = System.currentTimeMillis();
         this.unreadCount = 0;
         this.totalMessages = 0;
-        this.isPinned = false;
-        this.isMuted = false;
         this.updateTime = System.currentTimeMillis();
     }
 
-    // Getter and Setter methods...
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -64,12 +59,6 @@ public class Conversation {
 
     public int getTotalMessages() { return totalMessages; }
     public void setTotalMessages(int totalMessages) { this.totalMessages = totalMessages; }
-
-    public boolean isPinned() { return isPinned; }
-    public void setPinned(boolean pinned) { isPinned = pinned; }
-
-    public boolean isMuted() { return isMuted; }
-    public void setMuted(boolean muted) { isMuted = muted; }
 
     public long getUpdateTime() { return updateTime; }
     public void setUpdateTime(long updateTime) { this.updateTime = updateTime; }

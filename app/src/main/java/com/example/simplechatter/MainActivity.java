@@ -13,18 +13,13 @@ import com.example.simplechatter.activity.ContactsActivity;
 import com.example.simplechatter.database.Entity.User;
 import com.example.simplechatter.database.Repository.UserRepository;
 import com.example.simplechatter.activity.RegisterActivity;
-import com.example.simplechatter.util.ContactDataInitializer;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText etEmail, etPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // 初始化视图
-        initViews();
-        // 初始化数据库连接
-        initializeDatabase();
         //注册事件
         registerButton();
         //登录事件
@@ -34,16 +29,6 @@ public class MainActivity extends AppCompatActivity {
         //忘记密码
 //        setupForgotPassword();
     }
-    private void initViews() {
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-    }
-    private void initializeDatabase(){
-        // 初始化联系人数据
-        ContactDataInitializer initializer = new ContactDataInitializer(this);
-        initializer.initializeSampleData(1); // 为用户1初始化数据
-    }
-
     private void registerButton(){
         findViewById(R.id.tvRegister).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onLoginResult(boolean success, User user) {
                     runOnUiThread(() -> {
                         if (success) {
-                            Toast.makeText(MainActivity.this, "登录成功！", Toast.LENGTH_SHORT).show();
                             // 保存用户登录状态
                             saveUserLogin(user);
                             // 跳转到主页面
@@ -98,12 +82,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void saveUserLogin(User user) {
-        // 使用 SharedPreferences 保存用户登录状态
         SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        prefs.edit()
-                .putInt("user_id", user.getId())
-                .putString("user_email", user.getEmail())
-                .putBoolean("is_logged_in", true)
-                .apply();
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putInt("user_id", user.getId());
+        editor.putString("user_email", user.getEmail());
+        editor.putString("user_nickname", user.getNickname());
+        editor.putBoolean("is_logged_in", true);
+        editor.putLong("last_login_time", System.currentTimeMillis());
+
+        boolean success = editor.commit(); //提交保存
     }
 }

@@ -127,6 +127,35 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:startIconDrawable="@drawable/person_24px"
+        app:boxBackgroundColor="#F8F9FA"
+        app:boxStrokeColor="#E0E0E0"
+        app:hintTextColor="#666666"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordSureLayout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNameRegister"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="请输入用户名"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@android:color/transparent"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <!-- 注册按钮 -->
     <Button
         android:id="@+id/btnRegister"
@@ -140,7 +169,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordSureLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/nameInputLayout" />
 
     <!-- 返回登录按钮 -->
     <Button

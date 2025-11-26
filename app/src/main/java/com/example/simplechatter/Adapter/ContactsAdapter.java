@@ -1,5 +1,6 @@
 package com.example.simplechatter.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,14 @@ import com.example.simplechatter.R;
 import com.example.simplechatter.database.Entity.Contact;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder> {
     private List<Contact> contactList;
     private OnContactClickListener listener;
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
     public interface OnContactClickListener {
         void onContactClick(Contact contact);
         void onContactLongClick(Contact contact);
@@ -72,7 +73,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         private ImageView ivAvatar;
         private TextView tvName, tvLastMessage, tvTime, tvUnreadCount;
         private View vOnlineStatus;
-        private static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         ContactViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,21 +92,56 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             tvLastMessage.setText(contact.getLastMessage());
 
             // 设置时间
-            tvTime.setText(timeFormat.format(contact.getLastMessageTime()));
+            tvTime.setText(formatTime(contact.getLastMessageTime()));
 
             // 设置在线状态
             vOnlineStatus.setVisibility(contact.isOnline() ? View.VISIBLE : View.INVISIBLE);
 
-            // 设置未读消息数
-            if (contact.getUnreadCount() > 0) {
-                tvUnreadCount.setText(String.valueOf(contact.getUnreadCount()));
+            // ✅ 重点：设置未读消息数
+            setUnreadCount(contact.getUnreadCount());
+
+            // 设置头像
+            setAvatar(contact.getAvatar());
+        }
+
+        /**
+         * 设置未读消息数显示
+         */
+        private void setUnreadCount(int unreadCount) {
+            Log.d("ContactsAdapter", "设置未读消息数: " + unreadCount);
+
+            if (unreadCount > 0) {
                 tvUnreadCount.setVisibility(View.VISIBLE);
+
+                if (unreadCount > 99) {
+                    tvUnreadCount.setText("99+");
+                    tvUnreadCount.setMinimumWidth(dpToPx(28)); // 更宽一些
+                } else if (unreadCount > 9) {
+                    tvUnreadCount.setText(String.valueOf(unreadCount));
+                    tvUnreadCount.setMinimumWidth(dpToPx(24)); // 两位数宽度
+                } else {
+                    tvUnreadCount.setText(String.valueOf(unreadCount));
+                    tvUnreadCount.setMinimumWidth(dpToPx(20)); // 单位数宽度
+                }
             } else {
                 tvUnreadCount.setVisibility(View.GONE);
             }
+        }
 
-            // 设置头像（实际项目中从网络或本地加载）
-            setAvatar(contact.getAvatar());
+        /**
+         * 格式化时间显示
+         */
+        private String formatTime(long timestamp) {
+            if (timestamp == 0) {
+                return "";
+            }
+            return TIME_FORMAT.format(new Date(timestamp));
+        }
+        /**
+         * dp转px
+         */
+        private int dpToPx(int dp) {
+            return (int) (dp * itemView.getContext().getResources().getDisplayMetrics().density);
         }
 
         private void setAvatar(String avatarName) {
@@ -130,4 +165,5 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             ivAvatar.setImageResource(avatarResId);
         }
     }
+
 }

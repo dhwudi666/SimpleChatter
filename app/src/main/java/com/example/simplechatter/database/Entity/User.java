@@ -12,12 +12,10 @@ public class User {
     public String email;
     @NonNull
     public String password;
-
     public String nickname;
     public String avatar;
     public long createTime;
     public long lastLoginTime;
-    public boolean isActive;
 
     // 构造方法
     public User(@NonNull String email, @NonNull String password) {
@@ -27,7 +25,6 @@ public class User {
         this.avatar = "";
         this.createTime = System.currentTimeMillis();
         this.lastLoginTime = System.currentTimeMillis();
-        this.isActive = true;
     }
 
     // Getter 方法
@@ -38,7 +35,6 @@ public class User {
     public String getAvatar() { return avatar; }
     public long getCreateTime() { return createTime; }
     public long getLastLoginTime() { return lastLoginTime; }
-    public boolean isActive() { return isActive; }
 
     // Setter 方法
     public void setId(int id) { this.id = id; }
@@ -47,5 +43,5 @@ public class User {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
     public void setLastLoginTime(long lastLoginTime) { this.lastLoginTime = lastLoginTime; }
-    public void setActive(boolean active) { isActive = active; }
+
 }

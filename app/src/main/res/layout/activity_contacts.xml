@@ -54,8 +54,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical" />
-
-    <!-- 底部导航栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -76,22 +74,47 @@
             android:textColor="#999999"
             android:textSize="12sp"
             style="?android:attr/borderlessButtonStyle" />
-
-        <!-- 信息 -->
-        <Button
-            android:id="@+id/btnMessage"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableTop="@drawable/chat_24px"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@android:color/transparent"
-            android:textColor="#999999"
-            android:textSize="12sp"
-            style="?android:attr/borderlessButtonStyle" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
 
-        <!-- 我的（当前选中） -->
+            <!-- 信息按钮 -->
+            <Button
+                android:id="@+id/btnMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/chat_24px"
+                android:gravity="center"
+                android:padding="8dp"
+                android:background="@android:color/transparent"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                style="?android:attr/borderlessButtonStyle" />
+
+            <TextView
+                android:id="@+id/tvTotalUnread"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/unread_badge"
+                android:gravity="center"
+                android:minWidth="20dp"
+                android:padding="2dp"
+                android:text="1"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"
+                android:lineHeight="16sp" />
+        </FrameLayout>
+
+        <!-- 我的 -->
         <Button
             android:id="@+id/btnProfile"
             android:layout_width="0dp"
@@ -104,7 +127,6 @@
             android:textColor="#2196F3"
             android:textSize="12sp"
             style="?android:attr/borderlessButtonStyle" />
-
     </LinearLayout>
 
 </LinearLayout>

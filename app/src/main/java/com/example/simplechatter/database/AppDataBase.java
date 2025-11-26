@@ -16,7 +16,7 @@ import com.example.simplechatter.database.Entity.Message;
 import com.example.simplechatter.database.Entity.User;
 
 @Database(entities = {User.class, Contact.class, Conversation.class, Message.class},
-        version = 2,
+        version = 5,
         exportSchema = false)
 public abstract class AppDataBase extends RoomDatabase {
     public abstract UserDao userDao();

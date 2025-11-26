@@ -6,20 +6,28 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "contacts",
-        foreignKeys = @ForeignKey(entity = User.class,
-                parentColumns = "id",
-                childColumns = "userId",
-                onDelete = ForeignKey.CASCADE),
+        foreignKeys = {
+                @ForeignKey(entity = User.class,
+                        parentColumns = "id",
+                        childColumns = "userId",
+                        onDelete = ForeignKey.CASCADE),
+                @ForeignKey(entity = User.class,
+                        parentColumns = "id",
+                        childColumns = "contactId",
+                        onDelete = ForeignKey.CASCADE)
+        },
         indices = {
-                @Index("userId"), // 添加userId索引
-                @Index("contactId")
+                @Index("userId"),
+                @Index("contactId"),
+                @Index(value = {"userId", "contactId"}, unique = true) // 唯一索引，避免重复联系人
         })
 public class Contact {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    public int userId; // 关联的用户ID
-    public String contactId; // 联系人用户ID
+    public int userId;
+    public int contactId;
+
     public String name;
     public String avatar;
     public String lastMessage;
@@ -28,9 +36,7 @@ public class Contact {
     public boolean isOnline;
     public long createTime;
 
-
-    // 简化构造方法
-    public Contact(int userId, String contactId, String name) {
+    public Contact(int userId, int contactId, String name) {
         this.userId = userId;
         this.contactId = contactId;
         this.name = name;
@@ -45,7 +51,7 @@ public class Contact {
     // Getter 方法
     public int getId() { return id; }
     public int getUserId() { return userId; }
-    public String getContactId() { return contactId; }
+    public int getContactId() { return contactId; }
     public String getName() { return name; }
     public String getAvatar() { return avatar; }
     public String getLastMessage() { return lastMessage; }
@@ -57,7 +63,7 @@ public class Contact {
     // Setter 方法
     public void setId(int id) { this.id = id; }
     public void setUserId(int userId) { this.userId = userId; }
-    public void setContactId(String contactId) { this.contactId = contactId; }
+    public void setContactId(int contactId) { this.contactId = contactId; }
     public void setName(String name) { this.name = name; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
     public void setLastMessage(String lastMessage) { this.lastMessage = lastMessage; }
