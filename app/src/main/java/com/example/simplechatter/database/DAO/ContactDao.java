@@ -28,7 +28,6 @@ public interface ContactDao {
     @Query("UPDATE contacts SET unreadCount = 0 WHERE id = :contactId")
     void clearUnreadCount(int contactId);
 
-    // ✅ 修复：添加按用户和联系人ID清空未读的方法
     @Query("UPDATE contacts SET unreadCount = 0 WHERE userId = :userId AND contactId = :contactId")
     int clearUnreadCountForUser(int userId, int contactId);
     // 更新最后消息
@@ -38,7 +37,7 @@ public interface ContactDao {
     // 未读消息数
     @Query("UPDATE contacts SET unreadCount = unreadCount + 1 WHERE id = :contactId")
     void incrementUnreadCount(int contactId);
-    // ✅ 新增：收到消息时更新未读计数
+
     @Query("UPDATE contacts SET " +
             "lastMessage = :lastMessage, " +
             "lastMessageTime = :timestamp, " +
@@ -48,7 +47,7 @@ public interface ContactDao {
     // 获取总未读消息数
     @Query("SELECT SUM(unreadCount) FROM contacts WHERE userId = :userId")
     int getTotalUnreadCount(int userId);
-    // ✅ 新增：插入或更新联系人的方法（重要！）
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertOrUpdateContact(Contact contact);
 

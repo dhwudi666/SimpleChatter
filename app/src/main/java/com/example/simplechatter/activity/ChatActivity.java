@@ -412,7 +412,7 @@ public class ChatActivity extends AppCompatActivity {
                 message.setTimestamp(System.currentTimeMillis());
                 message.setStatus(Message.STATUS_SENT);
 
-                // ✅ 修复：使用事务方法插入消息并更新未读计数
+                //使用事务方法插入消息并更新未读计数
                 long messageId = messageDao.insertMessageAndUpdateUnread(message);
 
                 if (messageId > 0) {

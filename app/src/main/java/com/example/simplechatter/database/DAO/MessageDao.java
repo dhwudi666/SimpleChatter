@@ -14,7 +14,6 @@ public interface MessageDao {
     @Insert
     long insertMessage(Message message);
 
-    // ✅ 修复：添加事务处理，确保消息插入和未读更新原子性
     @Transaction
     default long insertMessageAndUpdateUnread(Message message) {
         try {
@@ -38,7 +37,7 @@ public interface MessageDao {
     default void updateConversationLastMessage(Message message) {
         // 更新会话的最后消息逻辑
     }
-    // ✅ 新增：更新接收者联系人的未读消息
+
     @Query("UPDATE contacts SET " +
             "lastMessage = :content, " +
             "lastMessageTime = :timestamp, " +
