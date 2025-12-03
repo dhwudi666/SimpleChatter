@@ -1,12 +1,9 @@
 package com.example.simplechatter.activity;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +22,8 @@ import com.example.simplechatter.database.DAO.MessageDao;
 import com.example.simplechatter.database.Entity.Contact;
 import com.example.simplechatter.database.Entity.Conversation;
 import com.example.simplechatter.database.Entity.Message;
+import com.example.simplechatter.util.UserSessionManager;
+import com.example.simplechatter.util.ContactManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,94 +31,54 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity {
+    private static final String TAG = "ChatActivity";
+
     private RecyclerView rvMessages;
     private EditText etMessage;
     private Button btnSend;
-    private ImageButton btnBack, btnMore, btnVoice;
-    private TextView tvChatTitle, tvOnlineStatus;
+    private ImageButton btnBack, btnMore;
+    private TextView tvChatTitle;
 
     private MessageAdapter messageAdapter;
     private MessageDao messageDao;
     private ConversationDao conversationDao;
     private ContactDao contactDao;
     private ExecutorService executor;
+    private UserSessionManager sessionManager;
+    private ContactManager contactManager;
 
-    private int contactId; // 联系人ID
-    private int conversationId = -1; // 会话ID，初始化为-1
+    private int contactId;
+    private int conversationId = -1;
     private String contactName;
-
     private List<Message> messageList = new ArrayList<>();
-    private boolean isKeyboardMode = true; // 当前是否为键盘模式
-
-    // SharedPreferences 常量
-    private static final String PREFS_NAME = "user_prefs";
-    private static final String KEY_USER_ID = "user_id";
-    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        Log.d("ChatActivity", "=== 启动ChatActivity ===");
+        sessionManager = new UserSessionManager(this);
+        contactManager = new ContactManager(this);
 
-        // 首先检查登录状态
-        if (!checkLoginStatus()) {
-            return; // 如果未登录，直接返回
+        if (!checkLoginStatus() || !getIntentData()) {
+            return;
         }
 
-        // 获取传递的参数
-        if (!getIntentData()) {
-            return; // 参数无效，直接返回
-        }
-
-        // 初始化视图
         initViews();
-        // 初始化数据
         initData();
-        // 设置事件监听
         setupListeners();
-        // 添加消息监听
         observeMessages();
-        // 加载消息
         loadMessages();
-        // 清空未读消息
         clearUnreadCount();
     }
 
-    /**
-     * 检查用户登录状态
-     */
     private boolean checkLoginStatus() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        boolean isLoggedIn = prefs.getBoolean(KEY_IS_LOGGED_IN, false);
-        int currentUserId = prefs.getInt(KEY_USER_ID, -1);
-
-        if (!isLoggedIn || currentUserId == -1) {
-            Log.e("ChatActivity", "用户未登录，无法进入聊天界面");
+        if (!sessionManager.isLoggedIn()) {
             Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
             finish();
             return false;
         }
-
-        Log.d("ChatActivity", "用户已登录，用户ID: " + currentUserId);
         return true;
-    }
-
-    /**
-     * 获取当前登录用户的ID
-     */
-    private int getCurrentUserId() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return prefs.getInt(KEY_USER_ID, -1);
-    }
-
-    /**
-     * 检查是否已登录
-     */
-    private boolean isUserLoggedIn() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return prefs.getBoolean(KEY_IS_LOGGED_IN, false) && getCurrentUserId() != -1;
     }
 
     private boolean getIntentData() {
@@ -128,16 +87,13 @@ public class ChatActivity extends AppCompatActivity {
 
         if (contactId == -1) {
             Toast.makeText(this, "联系人信息错误", Toast.LENGTH_SHORT).show();
-            Log.e("ChatActivity", "联系人ID无效，关闭Activity");
             finish();
             return false;
         }
 
-        // 检查是否尝试与自己聊天
-        int currentUserId = getCurrentUserId();
+        int currentUserId = sessionManager.getCurrentUserId();
         if (contactId == currentUserId) {
             Toast.makeText(this, "不能与自己聊天", Toast.LENGTH_SHORT).show();
-            Log.w("ChatActivity", "尝试与自己聊天，当前用户ID: " + currentUserId + ", 联系人ID: " + contactId);
             finish();
             return false;
         }
@@ -151,20 +107,14 @@ public class ChatActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
         btnMore = findViewById(R.id.btnMore);
-        btnVoice = findViewById(R.id.btnVoice);
         tvChatTitle = findViewById(R.id.tvChatTitle);
-        tvOnlineStatus = findViewById(R.id.tvOnlineStatus);
 
-        // 设置标题
         tvChatTitle.setText(contactName != null ? contactName : "聊天对象");
 
-        // 设置消息列表 - 动态传入当前用户ID
-        int currentUserId = getCurrentUserId();
+        int currentUserId = sessionManager.getCurrentUserId();
         messageAdapter = new MessageAdapter(messageList, currentUserId);
         rvMessages.setLayoutManager(new LinearLayoutManager(this));
         rvMessages.setAdapter(messageAdapter);
-
-        Log.d("ChatActivity", "初始化视图完成，当前用户ID: " + currentUserId);
     }
 
     private void initData() {
@@ -173,59 +123,53 @@ public class ChatActivity extends AppCompatActivity {
         conversationDao = db.conversationDao();
         contactDao = db.contactDao();
         executor = Executors.newSingleThreadExecutor();
-
-        // 获取或创建会话
         getOrCreateConversation();
     }
 
     private void getOrCreateConversation() {
-        int currentUserId = getCurrentUserId();
-        Log.d("ChatActivity", "开始获取或创建会话，当前用户ID: " + currentUserId + ", 联系人ID: " + contactId);
-
+        int currentUserId = sessionManager.getCurrentUserId();
         executor.execute(() -> {
             try {
-                Conversation conversation = conversationDao.getConversation(currentUserId, contactId);
+                // 先尝试获取未删除的会话
+                Conversation conversation = conversationDao.getActiveConversation(currentUserId, contactId);
+
                 if (conversation == null) {
-                    Log.d("ChatActivity", "创建新会话");
-                    // 创建新会话
-                    conversation = new Conversation(currentUserId, contactId);
-                    long newConversationId = conversationDao.insertConversation(conversation);
-                    conversationId = (int) newConversationId;
-                    conversation.setId(conversationId);
-
-                    Log.d("ChatActivity", "新会话创建成功，ID: " + conversationId + ", 用户ID: " + currentUserId);
-
+                    // 检查是否存在已删除的会话，如果存在则恢复
+                    Conversation deletedConversation = conversationDao.getConversation(currentUserId, contactId);
+                    if (deletedConversation != null && deletedConversation.getIsDeleted() == 1) {
+                        // 恢复已删除的会话
+                        conversationDao.restoreConversation(currentUserId, contactId);
+                        conversationId = deletedConversation.getId();
+                        Log.d(TAG, "恢复已删除的会话，ID: " + conversationId);
+                    } else {
+                        // 创建新会话
+                        conversation = new Conversation(currentUserId, contactId);
+                        conversation.setIsDeleted(0);
+                        long newConversationId = conversationDao.insertConversation(conversation);
+                        conversationId = (int) newConversationId;
+                        Log.d(TAG, "创建新会话，ID: " + conversationId);
+                    }
                 } else {
                     conversationId = conversation.getId();
-                    Log.d("ChatActivity", "找到现有会话，ID: " + conversationId + ", 用户ID: " + currentUserId);
+                    Log.d(TAG, "找到现有会话，ID: " + conversationId);
                 }
-
             } catch (Exception e) {
-                Log.e("ChatActivity", "获取或创建会话失败: " + e.getMessage());
+                Log.e(TAG, "获取或创建会话失败: " + e.getMessage());
+                e.printStackTrace();
                 runOnUiThread(() ->
-                        Toast.makeText(this, "会话初始化失败", Toast.LENGTH_SHORT).show()
-                );
+                        Toast.makeText(this, "会话初始化失败", Toast.LENGTH_SHORT).show());
             }
         });
     }
 
     private void setupListeners() {
-        // 返回按钮
-        btnBack.setOnClickListener(v -> {
-            Log.d("ChatActivity", "返回按钮点击，当前用户ID: " + getCurrentUserId());
-            finish();
-        });
+        btnBack.setOnClickListener(v -> finish());
 
-        // 发送按钮
-        btnSend.setOnClickListener(v -> {
-            Log.d("ChatActivity", "发送消息点击，用户ID: " + getCurrentUserId());
-            sendMessage();
-        });
+        btnSend.setOnClickListener(v -> sendMessage());
 
-        // 更多按钮
-        btnMore.setOnClickListener(v -> showMoreMenu());
+        btnMore.setOnClickListener(v ->
+                Toast.makeText(this, "更多功能", Toast.LENGTH_SHORT).show());
 
-        // 输入框文本变化监听
         etMessage.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -235,85 +179,14 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(android.text.Editable s) {
-                boolean hasText = !TextUtils.isEmpty(s.toString());
-                btnSend.setVisibility(hasText ? View.VISIBLE : View.GONE);
+                btnSend.setVisibility(TextUtils.isEmpty(s.toString()) ? View.GONE : View.VISIBLE);
             }
         });
     }
 
-//    private void setupKeyboardFunction() {
-//        // 设置输入框获取焦点时自动显示键盘
-//        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    showKeyboard();
-//                }
-//            }
-//        });
-//
-//        // 点击输入框区域时显示键盘
-//        etMessage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showKeyboard();
-//            }
-//        });
-//
-//        // 点击聊天区域时隐藏键盘（可选）
-//        rvMessages.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, android.view.MotionEvent event) {
-//                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-//                    hideKeyboard();
-//                    etMessage.clearFocus();
-//                }
-//                return false;
-//            }
-//        });
-//
-//        // 进入界面时自动显示键盘
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                showKeyboard();
-//            }
-//        }, 300);
-//    }
-//
-//    /**
-//     * 显示软键盘
-//     */
-//    private void showKeyboard() {
-//        Log.d("ChatActivity", "显示键盘，用户ID: " + getCurrentUserId());
-//        etMessage.requestFocus();
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        if (imm != null) {
-//            imm.showSoftInput(etMessage, InputMethodManager.SHOW_IMPLICIT);
-//        }
-//    }
-//
-//    /**
-//     * 隐藏软键盘
-//     */
-//    private void hideKeyboard() {
-//        Log.d("ChatActivity", "隐藏键盘，用户ID: " + getCurrentUserId());
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        if (imm != null) {
-//            imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
-//        }
-//        etMessage.clearFocus();
-//    }
-
-
-
     private void sendMessage() {
-        int currentUserId = getCurrentUserId();
-
-        // 检查登录状态
-        if (!isUserLoggedIn()) {
+        if (!sessionManager.isLoggedIn()) {
             Toast.makeText(this, "用户未登录，请重新登录", Toast.LENGTH_SHORT).show();
-            Log.e("ChatActivity", "发送消息失败：用户未登录");
             finish();
             return;
         }
@@ -324,127 +197,118 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        // 禁用发送按钮防止重复发送
+        int currentUserId = sessionManager.getCurrentUserId();
+
+        // 检查双向好友关系
+        executor.execute(() -> {
+            boolean isMutual = contactManager.isMutualFriend(currentUserId, contactId);
+            runOnUiThread(() -> {
+                if (!isMutual) {
+                    Toast.makeText(this, "你还不是对方的好友，无法发送消息", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // 双向好友，可以发送消息
+                performSendMessage(content, currentUserId);
+            });
+        });
+    }
+
+    private void performSendMessage(String content, int currentUserId) {
         btnSend.setEnabled(false);
 
         executor.execute(() -> {
             try {
-                // 创建消息对象
+                // 确保会话ID有效
+                if (conversationId == -1) {
+                    Conversation conversation = conversationDao.getActiveConversation(currentUserId, contactId);
+                    if (conversation != null) {
+                        conversationId = conversation.getId();
+                    } else {
+                        throw new Exception("会话不存在");
+                    }
+                }
+
                 Message message = new Message(conversationId, currentUserId, contactId, content, Message.TYPE_TEXT);
                 message.setTimestamp(System.currentTimeMillis());
                 message.setStatus(Message.STATUS_SENT);
 
-                //使用事务方法插入消息并更新未读计数
                 long messageId = messageDao.insertMessageAndUpdateUnread(message);
-
                 if (messageId > 0) {
                     message.setId((int) messageId);
-
                     runOnUiThread(() -> {
-                        // 添加到消息列表
                         messageList.add(message);
                         messageAdapter.notifyItemInserted(messageList.size() - 1);
-                        // 清空输入框
                         etMessage.setText("");
-                        // 滚动到底部
                         scrollToBottom();
-                        // 重新启用发送按钮
                         btnSend.setEnabled(true);
-
-                        Log.d("ChatActivity", "消息发送成功，用户ID: " + currentUserId +
-                                ", 消息ID: " + messageId + ", 内容: " + content);
-                        Toast.makeText(ChatActivity.this, "消息已发送", Toast.LENGTH_SHORT).show();
                     });
                 } else {
                     throw new Exception("插入消息失败");
                 }
-
             } catch (Exception e) {
-                Log.e("ChatActivity", "发送消息失败，用户ID: " + currentUserId + ", 错误: " + e.getMessage());
+                Log.e(TAG, "发送消息失败: " + e.getMessage());
+                e.printStackTrace();
                 runOnUiThread(() -> {
                     btnSend.setEnabled(true);
-                    Toast.makeText(ChatActivity.this, "发送失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "发送失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
             }
         });
     }
 
     private void loadMessages() {
-        int currentUserId = getCurrentUserId();
-        Log.d("ChatActivity", "开始加载消息，当前用户ID: " + currentUserId + ", 联系人ID: " + contactId);
-
+        int currentUserId = sessionManager.getCurrentUserId();
         executor.execute(() -> {
             try {
+                // 加载所有消息（包括删除联系人之前的消息）
                 List<Message> messages = messageDao.getMessagesBetweenUsers(currentUserId, contactId);
-
-                Log.d("ChatActivity", "数据库查询结果 - 消息数量: " + messages.size());
-                for (Message msg : messages) {
-                    Log.d("ChatActivity", "消息详情 - ID: " + msg.getId() +
-                            ", 发送者: " + msg.getSenderId() +
-                            ", 接收者: " + msg.getReceiverId() +
-                            ", 内容: " + msg.getContent());
-                }
-
                 runOnUiThread(() -> {
                     messageList.clear();
                     messageList.addAll(messages);
                     messageAdapter.notifyDataSetChanged();
                     scrollToBottom();
 
-                    Log.d("ChatActivity", "加载消息完成，数量: " + messages.size() +
-                            ", 当前用户ID: " + currentUserId);
-
-                    // 统计消息类型
-                    int sentCount = 0, receivedCount = 0;
-                    for (Message msg : messages) {
-                        if (msg.getSenderId() == currentUserId) {
-                            sentCount++;
-                        } else if (msg.getReceiverId() == currentUserId) {
-                            receivedCount++;
-                        }
-                    }
-
-                    Log.d("ChatActivity", "消息统计 - 我发送: " + sentCount + ", 对方发送: " + receivedCount);
-
                     if (messages.isEmpty()) {
-                        Toast.makeText(ChatActivity.this, "还没有消息，开始聊天吧！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "还没有消息，开始聊天吧！", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(ChatActivity.this, "加载了 " + messages.size() + " 条消息", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "加载了 " + messages.size() + " 条消息", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             } catch (Exception e) {
-                Log.e("ChatActivity", "加载消息失败，用户ID: " + currentUserId + ", 错误: " + e.getMessage());
+                Log.e(TAG, "加载消息失败: " + e.getMessage());
+                e.printStackTrace();
                 runOnUiThread(() ->
-                        Toast.makeText(ChatActivity.this, "加载消息失败", Toast.LENGTH_SHORT).show()
-                );
+                        Toast.makeText(this, "加载消息失败", Toast.LENGTH_SHORT).show());
             }
         });
     }
 
     private void observeMessages() {
-        int currentUserId = getCurrentUserId();
-
+        int currentUserId = sessionManager.getCurrentUserId();
         messageDao.getMessagesBetweenUsersLiveData(currentUserId, contactId)
                 .observe(this, messages -> {
-                    Log.d("ChatActivity", "实时消息更新，数量: " + messages.size());
                     messageList.clear();
                     messageList.addAll(messages);
                     messageAdapter.notifyDataSetChanged();
                     scrollToBottom();
                 });
     }
+
     private void clearUnreadCount() {
-        int currentUserId = getCurrentUserId();
-        Log.d("ChatActivity", "清空未读消息数，用户ID: " + currentUserId);
         executor.execute(() -> {
             try {
                 if (conversationId != -1) {
                     conversationDao.clearUnreadCount(conversationId);
-                    contactDao.clearUnreadCount(contactId);
+                    // 只清除未删除的联系人的未读数
+                    Contact contact = contactDao.getActiveContact(sessionManager.getCurrentUserId(), contactId);
+                    if (contact != null) {
+                        contactDao.clearUnreadCount(contact.getId());
+                    }
                 }
             } catch (Exception e) {
-                Log.e("ChatActivity", "清空未读消息数失败，用户ID: " + currentUserId + ", 错误: " + e.getMessage());
+                Log.e(TAG, "清空未读消息数失败: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -455,30 +319,20 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void showMoreMenu() {
-        Toast.makeText(this, "更多功能", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("ChatActivity", "页面恢复，刷新消息，用户ID: " + getCurrentUserId());
-
-        // 每次恢复时检查登录状态
-        if (!isUserLoggedIn()) {
+        if (!sessionManager.isLoggedIn()) {
             Toast.makeText(this, "登录已过期，请重新登录", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        // 页面恢复时刷新消息列表
         loadMessages();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("ChatActivity", "=== 销毁ChatActivity，用户ID: " + getCurrentUserId() + " ===");
-
         if (executor != null) {
             executor.shutdown();
         }

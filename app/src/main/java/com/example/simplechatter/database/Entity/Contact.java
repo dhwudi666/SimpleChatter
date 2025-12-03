@@ -36,16 +36,19 @@ public class Contact {
     public boolean isOnline;
     public long createTime;
 
+    // 软删除标记：0表示未删除，1表示已删除
+    public int isDeleted;
+
     public Contact(int userId, int contactId, String name) {
         this.userId = userId;
         this.contactId = contactId;
         this.name = name;
         this.avatar = "";
-//        this.lastMessage = "";
         this.lastMessageTime = System.currentTimeMillis();
         this.unreadCount = 0;
         this.isOnline = false;
         this.createTime = System.currentTimeMillis();
+        this.isDeleted = 0; // 默认未删除
     }
 
     // Getter 方法
@@ -59,6 +62,7 @@ public class Contact {
     public int getUnreadCount() { return unreadCount; }
     public boolean isOnline() { return isOnline; }
     public long getCreateTime() { return createTime; }
+    public int getIsDeleted() { return isDeleted; }
 
     // Setter 方法
     public void setId(int id) { this.id = id; }
@@ -71,4 +75,5 @@ public class Contact {
     public void setUnreadCount(int unreadCount) { this.unreadCount = unreadCount; }
     public void setOnline(boolean online) { isOnline = online; }
     public void setCreateTime(long createTime) { this.createTime = createTime; }
+    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
 }

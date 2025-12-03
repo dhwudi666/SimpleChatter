@@ -23,7 +23,6 @@ public class UserRepository {
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    // 注册新用户
     public void register(User user, OnRegisterListener listener) {
         executor.execute(() -> {
             try {
@@ -44,14 +43,13 @@ public class UserRepository {
         });
     }
 
-    // 用户登录
     public void login(String email, String password, OnLoginListener listener) {
         executor.execute(() -> {
             try {
                 User user = userDao.login(email, password);
                 boolean success = user != null;
                 mainHandler.post(() -> {
-                    if (listener !=  null) {
+                    if (listener != null) {
                         listener.onLoginResult(success, user);
                     }
                 });
@@ -65,7 +63,6 @@ public class UserRepository {
         });
     }
 
-    // 检查邮箱是否存在
     public void checkEmailExists(String email, OnEmailCheckListener listener) {
         executor.execute(() -> {
             try {
@@ -86,7 +83,6 @@ public class UserRepository {
         });
     }
 
-    // 更新密码 - 修复参数问题
     public void updatePassword(int userId, String newPassword, OnPasswordUpdateListener listener) {
         executor.execute(() -> {
             try {
@@ -107,11 +103,9 @@ public class UserRepository {
         });
     }
 
-    // 根据邮箱更新密码
     public void updatePasswordByEmail(String email, String newPassword, OnPasswordUpdateListener listener) {
         executor.execute(() -> {
             try {
-                // 先获取用户ID
                 User user = userDao.getUserByEmail(email);
                 if (user != null) {
                     int result = userDao.updatePassword(user.getId(), newPassword);
@@ -138,26 +132,6 @@ public class UserRepository {
         });
     }
 
-    // 获取用户信息
-//    public void getUserById(int userId, OnGetUserListener listener) {
-//        executor.execute(() -> {
-//            try {
-//                User user = userDao.getUserById(userId);
-//                mainHandler.post(() -> {
-//                    if (listener != null) {
-//                        listener.onGetUserResult(user != null, user);
-//                    }
-//                });
-//            } catch (Exception e) {
-//                mainHandler.post(() -> {
-//                    if (listener != null) {
-//                        listener.onGetUserResult(false, null);
-//                    }
-//                });
-//            }
-//        });
-//    }
-
     // 回调接口
     public interface OnRegisterListener {
         void onRegisterResult(boolean success, long userId);
@@ -174,8 +148,4 @@ public class UserRepository {
     public interface OnPasswordUpdateListener {
         void onPasswordUpdateResult(boolean success);
     }
-
-//    public interface OnGetUserListener {
-//        void onGetUserResult(boolean success, User user);
-//    }
 }

@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
                         parentColumns = "id",
                         childColumns = "userId",
                         onDelete = ForeignKey.CASCADE),
-                @ForeignKey(entity = Contact.class,
+                @ForeignKey(entity = User.class,
                         parentColumns = "id",
                         childColumns = "contactId",
                         onDelete = ForeignKey.CASCADE)
@@ -29,6 +29,9 @@ public class Conversation {
     public int totalMessages;
     public long updateTime;
 
+    // 软删除标记：0表示未删除，1表示已删除
+    public int isDeleted;
+
     public Conversation(int userId, int contactId) {
         this.userId = userId;
         this.contactId = contactId;
@@ -37,6 +40,7 @@ public class Conversation {
         this.unreadCount = 0;
         this.totalMessages = 0;
         this.updateTime = System.currentTimeMillis();
+        this.isDeleted = 0; // 默认未删除
     }
 
     public int getId() { return id; }
@@ -62,4 +66,7 @@ public class Conversation {
 
     public long getUpdateTime() { return updateTime; }
     public void setUpdateTime(long updateTime) { this.updateTime = updateTime; }
+
+    public int getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
 }
