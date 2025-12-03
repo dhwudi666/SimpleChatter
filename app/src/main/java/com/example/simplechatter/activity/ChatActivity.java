@@ -268,12 +268,6 @@ public class ChatActivity extends AppCompatActivity {
                     messageList.addAll(messages);
                     messageAdapter.notifyDataSetChanged();
                     scrollToBottom();
-
-                    if (messages.isEmpty()) {
-                        Toast.makeText(this, "还没有消息，开始聊天吧！", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "加载了 " + messages.size() + " 条消息", Toast.LENGTH_SHORT).show();
-                    }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "加载消息失败: " + e.getMessage());

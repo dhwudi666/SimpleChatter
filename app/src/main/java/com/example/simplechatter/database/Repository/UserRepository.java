@@ -83,25 +83,6 @@ public class UserRepository {
         });
     }
 
-    public void updatePassword(int userId, String newPassword, OnPasswordUpdateListener listener) {
-        executor.execute(() -> {
-            try {
-                int result = userDao.updatePassword(userId, newPassword);
-                boolean success = result > 0;
-                mainHandler.post(() -> {
-                    if (listener != null) {
-                        listener.onPasswordUpdateResult(success);
-                    }
-                });
-            } catch (Exception e) {
-                mainHandler.post(() -> {
-                    if (listener != null) {
-                        listener.onPasswordUpdateResult(false);
-                    }
-                });
-            }
-        });
-    }
 
     public void updatePasswordByEmail(String email, String newPassword, OnPasswordUpdateListener listener) {
         executor.execute(() -> {

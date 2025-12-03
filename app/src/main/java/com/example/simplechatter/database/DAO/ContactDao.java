@@ -28,30 +28,10 @@ public interface ContactDao {
     @Query("UPDATE contacts SET unreadCount = 0 WHERE id = :contactId")
     void clearUnreadCount(int contactId);
 
-    @Query("UPDATE contacts SET unreadCount = 0 WHERE userId = :userId AND contactId = :contactId")
-    int clearUnreadCountForUser(int userId, int contactId);
-
-    // 更新最后消息
-    @Query("UPDATE contacts SET lastMessage = :message, lastMessageTime = :time WHERE id = :contactId")
-    void updateLastMessage(int contactId, String message, long time);
-
-    // 未读消息数
-    @Query("UPDATE contacts SET unreadCount = unreadCount + 1 WHERE id = :contactId")
-    void incrementUnreadCount(int contactId);
-
-    @Query("UPDATE contacts SET " +
-            "lastMessage = :lastMessage, " +
-            "lastMessageTime = :timestamp, " +
-            "unreadCount = unreadCount + 1 " +
-            "WHERE userId = :userId AND contactId = :contactId AND isDeleted = 0")
-    int updateContactWithNewMessage(int userId, int contactId, String lastMessage, long timestamp);
-
     // 获取总未读消息数（只统计未删除的）
     @Query("SELECT SUM(unreadCount) FROM contacts WHERE userId = :userId AND isDeleted = 0")
     int getTotalUnreadCount(int userId);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertOrUpdateContact(Contact contact);
 
     // 根据用户ID和联系人ID获取特定联系人（包括已删除的，用于恢复）
     @Query("SELECT * FROM contacts WHERE userId = :userId AND contactId = :contactId")
@@ -60,10 +40,6 @@ public interface ContactDao {
     // 根据用户ID和联系人ID获取未删除的联系人
     @Query("SELECT * FROM contacts WHERE userId = :userId AND contactId = :contactId AND isDeleted = 0")
     Contact getActiveContact(int userId, int contactId);
-
-    // 删除特定联系人（根据contact表的id）
-    @Query("DELETE FROM contacts WHERE id = :contactId")
-    int deleteContact(int contactId);
 
     // 软删除：标记为已删除（不真正删除数据）
     @Query("UPDATE contacts SET isDeleted = 1 WHERE userId = :userId AND contactId = :contactId")
