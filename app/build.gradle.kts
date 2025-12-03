@@ -31,18 +31,40 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    packagingOptions {
+        resources {
+            excludes += setOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module",
+                "META-INF/LICENSE.md",      // 关键：解决冲突
+                "META-INF/NOTICE.md"        // 关键：解决冲突
+            )
+        }
+    }
 }
 
 dependencies {
-    val room_version = "2.6.1" // 请使用当前最新的稳定版本
+    val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version") // 对于 Java 项目
-    implementation("androidx.room:room-ktx:$room_version")  //  对 Kotlin 协程的支持
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
+
+    //JavaMail API for sending emails
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
+//    implementation("com.sun.mail:javax.mail:1.6.2")
 
     implementation(libs.appcompat)
     implementation(libs.material)

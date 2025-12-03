@@ -23,7 +23,6 @@ public interface MessageDao {
             if (messageId > 0) {
                 // 2. 更新接收者的联系人未读计数
                 updateReceiverContactUnread(message);
-
                 // 3. 更新会话最后消息
                 updateConversationLastMessage(message);
             }
@@ -59,21 +58,6 @@ public interface MessageDao {
     int updateMessage(Message message);
     @Delete
     int Message(Message message);
-//    @Query("SELECT * FROM messages WHERE conversationId = :conversationId ORDER BY timestamp ASC")
-//    List<Message> getMessagesByConversation(int conversationId);
-//    @Query("SELECT * FROM messages WHERE senderId = :senderId")
-//    List<Message> getMessagesBySender(int senderId);
-//    @Query("SELECT * FROM messages WHERE receiverId = :receiverId")
-//    List<Message> getMessagesByReceiver(int receiverId);
-
-    @Query("SELECT * FROM messages WHERE id = :messageId LIMIT 1")
-    Message getMessageById(int messageId);
-
-    @Query("UPDATE messages SET status = :status WHERE id = :messageId")
-    int updateMessageStatus(int messageId, int status);
-
-    @Query("SELECT COUNT(*) FROM messages WHERE conversationId = :conversationId AND status < 3")
-    int getUnreadMessageCount(int conversationId);
 
     @Query("SELECT * FROM messages WHERE " +
             "(senderId = :userId1 AND receiverId = :userId2) OR " +
@@ -86,19 +70,4 @@ public interface MessageDao {
             "(senderId = :userId2 AND receiverId = :userId1) " +
             "ORDER BY timestamp ASC")
     LiveData<List<Message>> getMessagesBetweenUsersLiveData(int userId1, int userId2);
-
-
-
-    // 更新联系人的未读消息数和最后消息
-    @Query("UPDATE contacts SET " +
-            "lastMessage = :lastMessage, " +
-            "lastMessageTime = :timestamp, " +
-            "unreadCount = unreadCount + 1 " +
-            "WHERE userId = :receiverId AND contactId = :senderId")
-    void updateContactUnreadCount(int receiverId, int senderId, String lastMessage, long timestamp);
-
-    // 简化版本
-    @Query("UPDATE contacts SET unreadCount = unreadCount + 1 " +
-            "WHERE userId = :receiverId AND contactId = :senderId")
-    void updateContactUnreadCount(int receiverId, int senderId);
 }

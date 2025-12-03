@@ -14,8 +14,8 @@ public interface ConversationDao {
     @Delete
     int deleteConversation(Conversation conversation);
 
-    @Query("SELECT * FROM conversations WHERE userId = :userId ORDER BY lastMessageTime DESC")
-    List<Conversation> getConversationsByUserId(int userId);
+//    @Query("SELECT * FROM conversations WHERE userId = :userId ORDER BY lastMessageTime DESC")
+//    List<Conversation> getConversationsByUserId(int userId);
 
     @Query("SELECT * FROM conversations WHERE userId = :userId AND contactId = :contactId LIMIT 1")
     Conversation getConversation(int userId, int contactId);
@@ -25,6 +25,6 @@ public interface ConversationDao {
     @Query("UPDATE conversations SET unreadCount = 0 WHERE id = :conversationId")
     void clearUnreadCount(int conversationId);
 
-    @Query("UPDATE conversations SET lastMessage = :message, lastMessageTime = :time WHERE id = :conversationId")
-    void updateLastMessage(int conversationId, String message, long time);
+//    @Query("UPDATE conversations SET lastMessage = :message, lastMessageTime = :time WHERE id = :conversationId")
+//    void updateLastMessage(int conversationId, String message, long time);
 }

@@ -3,32 +3,22 @@ package com.example.simplechatter.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.simplechatter.Adapter.ContactsAdapter;
 import com.example.simplechatter.R;
 
 public class HomeActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         setupNavigation();
-//        initViews();
-
+        setupCardClickListeners();
     }
-//    private void initViews() {
-//        recyclerView = findViewById(R.id.rvContacts);
-//
-//        // 设置RecyclerView
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        adapter = new ContactsAdapter(contactList, this);
-//        recyclerView.setAdapter(adapter);
-//    }
+
     private void setupNavigation() {
         Button btnHome = findViewById(R.id.btnHome);
         Button btnMessage = findViewById(R.id.btnMessage);
@@ -51,4 +41,31 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+
+    private void setupCardClickListeners() {
+        // 今日推荐按钮
+        findViewById(R.id.btnViewNow).setOnClickListener(v -> {
+            Toast.makeText(this, "今日推荐功能开发中", Toast.LENGTH_SHORT).show();
+        });
+
+        // 资讯卡片
+        findViewById(R.id.cardNews).setOnClickListener(v -> {
+            Toast.makeText(this, "资讯功能开发中", Toast.LENGTH_SHORT).show();
+        });
+
+        // 知识卡片
+        findViewById(R.id.cardKnowledge).setOnClickListener(v -> {
+            Toast.makeText(this, "知识功能开发中", Toast.LENGTH_SHORT).show();
+        });
+
+        // 趋势卡片
+        findViewById(R.id.cardTrends).setOnClickListener(v -> {
+            Toast.makeText(this, "趋势功能开发中", Toast.LENGTH_SHORT).show();
+        });
+
+        // 社区卡片
+        findViewById(R.id.cardCommunity).setOnClickListener(v -> {
+            Toast.makeText(this, "社区功能开发中", Toast.LENGTH_SHORT).show();
+        });
+    }
 }

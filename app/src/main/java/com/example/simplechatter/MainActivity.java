@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.simplechatter.activity.ContactsActivity;
+import com.example.simplechatter.activity.ForgetPasswordActivity;
 import com.example.simplechatter.database.Entity.User;
 import com.example.simplechatter.database.Repository.UserRepository;
 import com.example.simplechatter.activity.RegisterActivity;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         // 检查是否已登录（自动登录）
         checkAutoLogin();
         //忘记密码
-//        setupForgotPassword();
+        setupForgotPassword();
     }
     private void registerButton(){
         findViewById(R.id.tvRegister).setOnClickListener(new View.OnClickListener() {
@@ -91,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("is_logged_in", true);
         editor.putLong("last_login_time", System.currentTimeMillis());
 
-        boolean success = editor.commit(); //提交保存
+        editor.commit(); //提交保存
+    }
+
+    private void setupForgotPassword() {
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        if (tvForgotPassword != null) {
+            tvForgotPassword.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, ForgetPasswordActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 }

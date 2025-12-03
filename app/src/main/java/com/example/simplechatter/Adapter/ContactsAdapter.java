@@ -146,7 +146,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
         private void setAvatar(String avatarName) {
             // 根据头像名称设置不同的头像资源
-            int avatarResId = R.drawable.ic_launcher_background; // 默认头像
+            int avatarResId = R.drawable.avatar1; // 默认头像
 
             if (avatarName != null) {
                 switch (avatarName) {

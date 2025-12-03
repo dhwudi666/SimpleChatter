@@ -31,12 +31,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
-
-        // ✅ 修复：动态计算消息方向，而不是调用不存在的方法
         boolean isSentByMe = message.getSenderId() == currentUserId;
-
-        Log.d("MessageAdapter", "消息方向判断 - 发送者: " + message.getSenderId() +
-                ", 当前用户: " + currentUserId + ", 是否我发送: " + isSentByMe);
+//
+//        Log.d("MessageAdapter", "消息方向判断 - 发送者: " + message.getSenderId() +
+//                ", 当前用户: " + currentUserId + ", 是否我发送: " + isSentByMe);
 
         return isSentByMe ? TYPE_SENT : TYPE_RECEIVED;
     }
@@ -61,11 +59,11 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         String time = timeFormat.format(message.getTimestamp());
 
         // 添加调试日志
-        boolean isSentByMe = message.getSenderId() == currentUserId;
-        Log.d("MessageAdapter", "绑定消息 - 位置: " + position +
-                ", 内容: " + message.getContent() +
-                ", 发送者: " + message.getSenderId() +
-                ", 类型: " + (isSentByMe ? "发送" : "接收"));
+//        boolean isSentByMe = message.getSenderId() == currentUserId;
+//        Log.d("MessageAdapter", "绑定消息 - 位置: " + position +
+//                ", 内容: " + message.getContent() +
+//                ", 发送者: " + message.getSenderId() +
+//                ", 类型: " + (isSentByMe ? "发送" : "接收"));
 
         if (holder.getItemViewType() == TYPE_SENT) {
             ((SentMessageViewHolder) holder).bind(message, time);

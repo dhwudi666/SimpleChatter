@@ -184,17 +184,6 @@
                 android:imeOptions="actionSend"
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
-
-            <!-- 表情按钮 -->
-            <ImageButton
-                android:id="@+id/btnEmoji"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/sentiment_satisfied_24px"
-                android:scaleType="centerInside"
-                android:tint="#666666" />
-
             <!-- 发送按钮 -->
             <Button
                 android:id="@+id/btnSend"

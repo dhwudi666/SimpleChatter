@@ -41,7 +41,7 @@ public class Contact {
         this.contactId = contactId;
         this.name = name;
         this.avatar = "";
-        this.lastMessage = "";
+//        this.lastMessage = "";
         this.lastMessageTime = System.currentTimeMillis();
         this.unreadCount = 0;
         this.isOnline = false;

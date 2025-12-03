@@ -336,7 +336,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                 int result = contactDao.deleteContact(contact.getId());
                 runOnUiThread(() -> {
                     if (result > 0) {
-                        Toast.makeText(this, "联系人已删除", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(this, "联系人已删除", Toast.LENGTH_SHORT).show();
                         loadContacts(""); // 刷新列表
                     } else {
                         Toast.makeText(this, "删除失败", Toast.LENGTH_SHORT).show();

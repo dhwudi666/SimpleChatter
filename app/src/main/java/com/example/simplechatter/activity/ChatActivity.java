@@ -35,7 +35,7 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView rvMessages;
     private EditText etMessage;
     private Button btnSend;
-    private ImageButton btnBack, btnMore, btnEmoji, btnVoice;
+    private ImageButton btnBack, btnMore, btnVoice;
     private TextView tvChatTitle, tvOnlineStatus;
 
     private MessageAdapter messageAdapter;
@@ -151,7 +151,6 @@ public class ChatActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
         btnMore = findViewById(R.id.btnMore);
-        btnEmoji = findViewById(R.id.btnEmoji);
         btnVoice = findViewById(R.id.btnVoice);
         tvChatTitle = findViewById(R.id.tvChatTitle);
         tvOnlineStatus = findViewById(R.id.tvOnlineStatus);
@@ -226,9 +225,6 @@ public class ChatActivity extends AppCompatActivity {
         // 更多按钮
         btnMore.setOnClickListener(v -> showMoreMenu());
 
-        // 表情按钮
-        btnEmoji.setOnClickListener(v -> toggleEmojiPanel());
-
         // 输入框文本变化监听
         etMessage.addTextChangedListener(new android.text.TextWatcher() {
             @Override
@@ -245,145 +241,71 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void setupKeyboardFunction() {
-        // 设置输入框获取焦点时自动显示键盘
-        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showKeyboard();
-                }
-            }
-        });
+//    private void setupKeyboardFunction() {
+//        // 设置输入框获取焦点时自动显示键盘
+//        etMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    showKeyboard();
+//                }
+//            }
+//        });
+//
+//        // 点击输入框区域时显示键盘
+//        etMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showKeyboard();
+//            }
+//        });
+//
+//        // 点击聊天区域时隐藏键盘（可选）
+//        rvMessages.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, android.view.MotionEvent event) {
+//                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+//                    hideKeyboard();
+//                    etMessage.clearFocus();
+//                }
+//                return false;
+//            }
+//        });
+//
+//        // 进入界面时自动显示键盘
+//        new android.os.Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showKeyboard();
+//            }
+//        }, 300);
+//    }
+//
+//    /**
+//     * 显示软键盘
+//     */
+//    private void showKeyboard() {
+//        Log.d("ChatActivity", "显示键盘，用户ID: " + getCurrentUserId());
+//        etMessage.requestFocus();
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (imm != null) {
+//            imm.showSoftInput(etMessage, InputMethodManager.SHOW_IMPLICIT);
+//        }
+//    }
+//
+//    /**
+//     * 隐藏软键盘
+//     */
+//    private void hideKeyboard() {
+//        Log.d("ChatActivity", "隐藏键盘，用户ID: " + getCurrentUserId());
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (imm != null) {
+//            imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+//        }
+//        etMessage.clearFocus();
+//    }
 
-        // 语音/键盘切换按钮点击事件
-        if (btnVoice != null) {
-            btnVoice.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    toggleInputMode();
-                }
-            });
-        }
 
-        // 点击输入框区域时显示键盘
-        etMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showKeyboard();
-            }
-        });
-
-        // 点击聊天区域时隐藏键盘（可选）
-        rvMessages.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, android.view.MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                    hideKeyboard();
-                    etMessage.clearFocus();
-                }
-                return false;
-            }
-        });
-
-        // 进入界面时自动显示键盘
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showKeyboard();
-            }
-        }, 300);
-    }
-
-    /**
-     * 显示软键盘
-     */
-    private void showKeyboard() {
-        Log.d("ChatActivity", "显示键盘，用户ID: " + getCurrentUserId());
-        etMessage.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.showSoftInput(etMessage, InputMethodManager.SHOW_IMPLICIT);
-        }
-        // 更新按钮状态为键盘模式
-        setKeyboardMode(true);
-    }
-
-    /**
-     * 隐藏软键盘
-     */
-    private void hideKeyboard() {
-        Log.d("ChatActivity", "隐藏键盘，用户ID: " + getCurrentUserId());
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
-        }
-        etMessage.clearFocus();
-    }
-
-    /**
-     * 切换输入模式（键盘/语音）
-     */
-    private void toggleInputMode() {
-        if (isKeyboardMode) {
-            // 切换到语音模式
-            switchToVoiceMode();
-        } else {
-            // 切换回键盘模式
-            switchToKeyboardMode();
-        }
-    }
-
-    /**
-     * 切换到键盘模式
-     */
-    private void switchToKeyboardMode() {
-        Log.d("ChatActivity", "切换到键盘模式，用户ID: " + getCurrentUserId());
-        isKeyboardMode = true;
-
-        // 更新按钮图标为键盘
-        if (btnVoice != null) {
-            btnVoice.setImageResource(R.drawable.keyboard_24px);
-            btnVoice.setContentDescription("切换到语音输入");
-        }
-
-        // 显示输入框
-        etMessage.setVisibility(View.VISIBLE);
-        // 显示键盘
-        showKeyboard();
-    }
-
-    /**
-     * 切换到语音模式
-     */
-    private void switchToVoiceMode() {
-        Log.d("ChatActivity", "切换到语音模式，用户ID: " + getCurrentUserId());
-        isKeyboardMode = false;
-
-        // 更新按钮图标为麦克风
-        if (btnVoice != null) {
-            btnVoice.setImageResource(R.drawable.mic_24px);
-            btnVoice.setContentDescription("切换到键盘输入");
-        }
-
-        // 隐藏键盘
-        hideKeyboard();
-        Toast.makeText(this, "语音模式", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 设置键盘模式状态
-     */
-    private void setKeyboardMode(boolean keyboardMode) {
-        isKeyboardMode = keyboardMode;
-        if (btnVoice != null) {
-            if (keyboardMode) {
-                btnVoice.setImageResource(R.drawable.keyboard_24px);
-            } else {
-                btnVoice.setImageResource(R.drawable.mic_24px);
-            }
-        }
-    }
 
     private void sendMessage() {
         int currentUserId = getCurrentUserId();
@@ -531,12 +453,6 @@ public class ChatActivity extends AppCompatActivity {
         if (messageList.size() > 0) {
             rvMessages.scrollToPosition(messageList.size() - 1);
         }
-    }
-
-    private void toggleEmojiPanel() {
-        View panelEmoji = findViewById(R.id.panelEmoji);
-        boolean isVisible = panelEmoji.getVisibility() == View.VISIBLE;
-        panelEmoji.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
     private void showMoreMenu() {

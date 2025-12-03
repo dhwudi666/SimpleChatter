@@ -139,24 +139,24 @@ public class UserRepository {
     }
 
     // 获取用户信息
-    public void getUserById(int userId, OnGetUserListener listener) {
-        executor.execute(() -> {
-            try {
-                User user = userDao.getUserById(userId);
-                mainHandler.post(() -> {
-                    if (listener != null) {
-                        listener.onGetUserResult(user != null, user);
-                    }
-                });
-            } catch (Exception e) {
-                mainHandler.post(() -> {
-                    if (listener != null) {
-                        listener.onGetUserResult(false, null);
-                    }
-                });
-            }
-        });
-    }
+//    public void getUserById(int userId, OnGetUserListener listener) {
+//        executor.execute(() -> {
+//            try {
+//                User user = userDao.getUserById(userId);
+//                mainHandler.post(() -> {
+//                    if (listener != null) {
+//                        listener.onGetUserResult(user != null, user);
+//                    }
+//                });
+//            } catch (Exception e) {
+//                mainHandler.post(() -> {
+//                    if (listener != null) {
+//                        listener.onGetUserResult(false, null);
+//                    }
+//                });
+//            }
+//        });
+//    }
 
     // 回调接口
     public interface OnRegisterListener {
@@ -175,7 +175,7 @@ public class UserRepository {
         void onPasswordUpdateResult(boolean success);
     }
 
-    public interface OnGetUserListener {
-        void onGetUserResult(boolean success, User user);
-    }
+//    public interface OnGetUserListener {
+//        void onGetUserResult(boolean success, User user);
+//    }
 }

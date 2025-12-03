@@ -112,23 +112,23 @@ public class ContactManager {
             }
         });
     }
+//
 
-
-    private void addContactSync(int userId, int contactUserId) {
-        Contact existing = contactDao.getContact(userId, contactUserId);
-        if (existing == null) {
-            User contactUser = userDao.getUserById(contactUserId);
-            if (contactUser != null) {
-                String displayName = contactUser.getNickname() != null && !contactUser.getNickname().isEmpty()
-                        ? contactUser.getNickname()
-                        : contactUser.getEmail().split("@")[0];
-
-                Contact contact = new Contact(userId, contactUserId, displayName);
-                contact.setAvatar(contactUser.getAvatar());
-                contactDao.insertContact(contact);
-            }
-        }
-    }
+//    private void addContactSync(int userId, int contactUserId) {
+//        Contact existing = contactDao.getContact(userId, contactUserId);
+//        if (existing == null) {
+//            User contactUser = userDao.getUserById(contactUserId);
+//            if (contactUser != null) {
+//                String displayName = contactUser.getNickname() != null && !contactUser.getNickname().isEmpty()
+//                        ? contactUser.getNickname()
+//                        : contactUser.getEmail().split("@")[0];
+//
+//                Contact contact = new Contact(userId, contactUserId, displayName);
+//                contact.setAvatar(contactUser.getAvatar());
+//                contactDao.insertContact(contact);
+//            }
+//        }
+//    }
 
     // 回调接口
     public interface OnContactAddListener {
