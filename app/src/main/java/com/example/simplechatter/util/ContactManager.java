@@ -67,28 +67,8 @@ public class ContactManager {
                     // 更新联系人信息
                     updateContactInfo(existing, contactUserId);
 
-                    // 检查并恢复/创建会话
-                    Conversation conversation = conversationDao.getConversation(userId, contactUserId);
-                    if (conversation != null) {
-                        if (conversation.getIsDeleted() == 1) {
-                            // 恢复已删除的会话
-                            Log.d(TAG, "恢复已删除的会话: userId=" + userId + ", contactId=" + contactUserId);
-                            conversationDao.restoreConversation(userId, contactUserId);
-                        }
-                    } else {
-                        // 创建新会话
-                        ensureConversationExists(userId, contactUserId);
-                    }
-
-                    // 检查双向好友关系
-                    boolean isMutual = isMutualFriend(userId, contactUserId);
-                    String message = isMutual
-                            ? "联系人已恢复，可以开始聊天了"
-                            : "联系人已恢复，但你还不是对方的好友";
-
-                    if (listener != null) {
-                        listener.onContactAddResult(true, message, isMutual);
-                    }
+                    // 确保会话存在并回调
+                    handleConversationAndNotify(userId, contactUserId, true, listener);
                     return;
                 }
 
@@ -113,26 +93,8 @@ public class ContactManager {
                 long result = contactDao.insertContact(contact);
 
                 if (result > 0) {
-                    // 检查是否存在已删除的会话，如果存在则恢复，否则创建新会话
-                    Conversation conversation = conversationDao.getConversation(userId, contactUserId);
-                    if (conversation != null && conversation.getIsDeleted() == 1) {
-                        // 恢复已删除的会话
-                        Log.d(TAG, "恢复已删除的会话: userId=" + userId + ", contactId=" + contactUserId);
-                        conversationDao.restoreConversation(userId, contactUserId);
-                    } else {
-                        // 自动创建会话
-                        ensureConversationExists(userId, contactUserId);
-                    }
-
-                    // 检查双向好友关系
-                    boolean isMutual = isMutualFriend(userId, contactUserId);
-                    String message = isMutual
-                            ? "添加成功，可以开始聊天了"
-                            : "添加成功，但你还不是对方的好友，无法发送消息";
-
-                    if (listener != null) {
-                        listener.onContactAddResult(true, message, isMutual);
-                    }
+                    // 确保会话存在并回调
+                    handleConversationAndNotify(userId, contactUserId, false, listener);
                 } else {
                     if (listener != null) {
                         listener.onContactAddResult(false, "添加失败", false);
@@ -147,6 +109,32 @@ public class ContactManager {
                 }
             }
         });
+    }
+
+    private void handleConversationAndNotify(int userId, int contactUserId, boolean restored, OnContactAddListener listener) {
+        try {
+            ensureConversationExists(userId, contactUserId);
+        } catch (Exception e) {
+            Log.e(TAG, "处理会话失败: " + e.getMessage());
+            e.printStackTrace();
+            if (listener != null) {
+                listener.onContactAddResult(false, "处理会话失败: " + e.getMessage(), false);
+            }
+            return;
+        }
+
+        // 检查双向好友关系并回调
+        boolean isMutual = isMutualFriend(userId, contactUserId);
+        String message;
+        if (restored) {
+            message = isMutual ? "联系人已恢复，可以开始聊天了" : "联系人已恢复，但你还不是对方的好友";
+        } else {
+            message = isMutual ? "添加成功，可以开始聊天了" : "添加成功，但你还不是对方的好友，无法发送消息";
+        }
+
+        if (listener != null) {
+            listener.onContactAddResult(true, message, isMutual);
+        }
     }
 
     /**
@@ -193,7 +181,7 @@ public class ContactManager {
                 Log.d(TAG, "软删除联系人: userId=" + userId + ", contactId=" + contactId +
                         ", 联系人标记结果=" + contactResult + ", 会话标记结果=" + conversationResult);
 
-                // 注意：不删除messages表中的消息，保留聊天记录
+                // 不删除messages表中的消息，保留聊天记录
 
                 if (listener != null) {
                     boolean success = contactResult > 0;

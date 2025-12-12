@@ -8,7 +8,6 @@ public class EmailConfig {
     public static final String QQ_SMTP_HOST = "smtp.qq.com";
     public static final String QQ_SMTP_PORT = "587";
 
-    // 请修改为实际使用的邮箱服务商
     public static final String SMTP_HOST = QQ_SMTP_HOST;
     public static final String SMTP_PORT = QQ_SMTP_PORT;
 

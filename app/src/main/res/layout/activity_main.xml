@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvWelcome"
         android:layout_marginTop="8dp" />
 
-    <!-- 邮箱输入框 - 修复图标显示问题 -->
+    <!-- 邮箱输入框 -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailInputLayout"
         android:layout_width="0dp"
@@ -65,7 +65,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- 密码输入框 - 修复图标显示问题 -->
+    <!-- 密码输入框  -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordInputLayout"
         android:layout_width="0dp"
@@ -123,7 +123,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvForgotPassword" />
 
-    <!-- 分隔线：或者 -->
     <RelativeLayout
         android:id="@+id/orLayout"
         android:layout_width="0dp"

@@ -62,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
             return user.getNickname();
         } else {
             String email = user.getEmail();
+            //返回@前的部分作为用户名
             if (email.contains("@")) {
                 return email.substring(0, email.indexOf("@"));
             }

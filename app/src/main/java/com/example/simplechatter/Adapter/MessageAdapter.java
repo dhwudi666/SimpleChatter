@@ -77,19 +77,19 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messageList.size();
     }
 
-    public void updateData(List<Message> newMessages) {
-        this.messageList.clear();
-        this.messageList.addAll(newMessages);
-        notifyDataSetChanged();
-
-        // 添加调试日志
-        Log.d("MessageAdapter", "数据更新，消息数量: " + newMessages.size());
-        for (int i = 0; i < newMessages.size(); i++) {
-            Message msg = newMessages.get(i);
-            Log.d("MessageAdapter", "消息" + i + ": 发送者=" + msg.getSenderId() +
-                    ", 接收者=" + msg.getReceiverId() + ", 内容=" + msg.getContent());
-        }
-    }
+//    public void updateData(List<Message> newMessages) {
+//        this.messageList.clear();
+//        this.messageList.addAll(newMessages);
+//        notifyDataSetChanged();
+//
+//        // 添加调试日志
+//        Log.d("MessageAdapter", "数据更新，消息数量: " + newMessages.size());
+//        for (int i = 0; i < newMessages.size(); i++) {
+//            Message msg = newMessages.get(i);
+//            Log.d("MessageAdapter", "消息" + i + ": 发送者=" + msg.getSenderId() +
+//                    ", 接收者=" + msg.getReceiverId() + ", 内容=" + msg.getContent());
+//        }
+//    }
 
     // 发送的消息ViewHolder
     static class SentMessageViewHolder extends RecyclerView.ViewHolder {

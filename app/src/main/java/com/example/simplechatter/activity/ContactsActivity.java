@@ -135,7 +135,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactsAdapt
                     return;
                 }
 
-                // 使用新的ContactManager添加联系人（会自动创建会话并检查双向好友）
+                // 使用新的ContactManager添加联系人
                 contactManager.addContact(currentUserId, targetUser.getId(), (success, message, isMutualFriend) -> {
                     runOnUiThread(() -> {
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

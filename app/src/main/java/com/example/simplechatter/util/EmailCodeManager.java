@@ -31,6 +31,7 @@ public class EmailCodeManager {
 
     private EmailCodeManager() {}
 
+    //线程安全地延迟创建唯一实例，供全 App 复用
     public static synchronized EmailCodeManager getInstance() {
         if (instance == null) {
             instance = new EmailCodeManager();

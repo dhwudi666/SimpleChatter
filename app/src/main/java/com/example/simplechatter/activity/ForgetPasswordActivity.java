@@ -62,6 +62,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
         if (!InputValidator.isValidEmail(email)) {
             Toast.makeText(this, "请输入正确的邮箱地址", Toast.LENGTH_SHORT).show();
+            //输入框立即获得焦点
             etEmail.requestFocus();
             return;
         }
@@ -95,7 +96,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             });
         });
     }
-
+    //60 秒防重复点击
     private void startCountDown() {
         btnSendCode.setEnabled(false);
         if (countDownTimer != null) {
@@ -103,6 +104,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         }
         countDownTimer = new CountDownTimer(60000, 1000) {
             @Override
+            //实时更新按钮文字
             public void onTick(long millisUntilFinished) {
                 btnSendCode.setText((millisUntilFinished / 1000) + "秒后重发");
             }

@@ -97,7 +97,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             // 设置在线状态
             vOnlineStatus.setVisibility(contact.isOnline() ? View.VISIBLE : View.INVISIBLE);
 
-            // ✅ 重点：设置未读消息数
+            //设置未读消息数
             setUnreadCount(contact.getUnreadCount());
 
             // 设置头像

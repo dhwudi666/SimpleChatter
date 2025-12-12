@@ -237,10 +237,29 @@ public class ChatActivity extends AppCompatActivity {
                 if (messageId > 0) {
                     message.setId((int) messageId);
                     runOnUiThread(() -> {
-                        messageList.add(message);
-                        messageAdapter.notifyItemInserted(messageList.size() - 1);
+                        // 去重检查：如果列表最后一条已经是同一条（id 或 时间+内容+发送者相同），就不重复添加
+                        boolean shouldAdd = true;
+                        if (!messageList.isEmpty()) {
+                            Message last = messageList.get(messageList.size() - 1);
+                            if (last.getId() == message.getId()
+                                    || (last.getTimestamp() == message.getTimestamp()
+                                    && last.getSenderId() == message.getSenderId()
+                                    && last.getContent() != null
+                                    && last.getContent().equals(message.getContent()))) {
+                                shouldAdd = false;
+                            }
+                        }
+
+                        if (shouldAdd) {
+                            messageList.add(message);
+                            messageAdapter.notifyItemInserted(messageList.size() - 1);
+                            scrollToBottom();
+                        } else {
+                            // 确保界面状态正确，选择刷新或更新最后一项
+                            messageAdapter.notifyDataSetChanged();
+                        }
+
                         etMessage.setText("");
-                        scrollToBottom();
                         btnSend.setEnabled(true);
                     });
                 } else {
